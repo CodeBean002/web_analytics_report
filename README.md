@@ -87,7 +87,7 @@ This dashboard is not just about visualization—it's built for **actionable dec
 For questions, feedback, or collaboration opportunities:
 
 **Merit**  
-📧 [abatan.eniola@]  
+📧 [abatan.eniola@gmail.com]  
 🔗 [www.linkedin.com/in/codebean1474]
 
 ---
