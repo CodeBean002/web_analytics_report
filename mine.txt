@@ -1,0 +1,144 @@
+Page Views =
+VAR PeriodSelected = SELECTEDVALUE('Date Range'[Sort])
+VAR offsetDays =
+	SWITCH(
+		PeriodSelected,
+		1, -7,
+		2, -30,
+		3, -90,
+		4, -365,
+		BLANK()
+)
+
+
+RETURN
+IF(
+	ISBLANK(offsetDays),
+	SUM(web[Page Views]),
+	CALCULATE(
+		SUM(web[Page Views]),
+		DATESINPERIOD(
+			'DATE'Date',
+			MAX('DATE[Date]),
+			offsetDays,
+			DAY
+			)
+		)
+)
+
+
+
+Avg.Bounce Rate(%) =
+VAR PeriodSelected = SELECTEDVALUE('Date Range'[Sort])
+VAR offsetDays =
+	SWITCH(
+		PeriodSelected,
+		1, -7,
+		2, -30,
+		3, -90,
+		4, -365,
+		BLANK()
+)
+
+
+RETURN
+IF(
+	ISBLANK(offsetDays),
+	AVERAGE(web[Bounce Rate (%)]),
+	CALCULATE(
+		AVERAGE(web[Bounce Rate (%)]),
+		DATESINPERIOD(
+			'DATE'[Date],
+			MAX('DATE'[Date]),
+			offsetDays,
+			DAY
+			)
+		)
+)
+
+
+Avg.Bounce Rate(%) =
+VAR PeriodSelected = SELECTEDVALUE('Date Range'[Sort])
+VAR offsetDays =
+	SWITCH(
+		PeriodSelected,
+		1, -7,
+		2, -30,
+		3, -90,
+		4, -365,
+		BLANK()
+)
+
+
+RETURN
+IF(
+	ISBLANK(offsetDays),
+	AVERAGE(web[Session Duration (sec)]),
+	CALCULATE(
+		AVERAGE(web[Session Duration (sec)]),
+		DATESINPERIOD(
+			'DATE'[Date],
+			MAX('DATE'[Date]),
+			offsetDays,
+			DAY
+			)
+		)
+)
+
+
+Total Conversion =
+CALCULATE (
+	COUNTROWS(web), web[Conversion] = 1
+)
+
+
+Conversion Rate =
+VAR PeriodSelected = SELECTEDVALUE('Date Range'[Sort])
+VAR offsetDays =
+	SWITCH(
+		PeriodSelected,
+		1, -7,
+		2, -30,
+		3, -90,
+		4, -365,
+		BLANK()
+)
+
+
+RETURN
+IF(
+	ISBLANK(offsetDays),
+	DIVIDE([Total Conversion], [Users]),
+	CALCULATE(
+		DIVIDE([Total Conversion], [Users]),
+		DATESINPERIOD(
+			'DATE'[Date],
+			MAX('DATE'[Date]),
+			offsetDays,
+			DAY
+			)
+		)
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

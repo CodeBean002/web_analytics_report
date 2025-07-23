@@ -1,0 +1,37 @@
+Users % Change = 
+VAR PeriodSelected = SELECTEDVALUE('Date Range'[Sort])
+VAR CurrentValue = [Users]
+VAR PreviousPeriodValue = 
+    SWITCH(
+        TRUE(),
+        PeriodSelected = 1, CALCULATE([Users], DATEADD('Date Table'[Date], -7, DAY)),
+        PeriodSelected = 2, CALCULATE([Users], DATEADD('Date Table'[Date], -30, DAY)),
+        PeriodSelected = 3, CALCULATE([Users], DATEADD('Date Table'[Date], -90, DAY)),
+        PeriodSelected = 4, CALCULATE([Users], DATEADD('Date Table'[Date], -365, DAY)),
+        BLANK() // for Custom (5) or any other invalid case
+    )
+
+VAR Change = DIVIDE(CurrentValue - PreviousPeriodValue, PreviousPeriodValue)
+VAR Arrow = 
+    IF(
+        NOT ISBLANK(Change),
+        IF(Change > 0, " ▲", " ▼"),
+        ""
+    )
+
+VAR PeriodLabel = 
+    SWITCH(
+        TRUE(),
+        PeriodSelected = 1, " vs previous 7 days",
+        PeriodSelected = 2, " vs previous 30 days",
+        PeriodSelected = 3, " vs previous 90 days",
+        PeriodSelected = 4, " vs previous 365 days",
+        " (N/A)"
+    )
+
+RETURN
+    IF(
+        PeriodSelected = 5 || ISBLANK(Change),
+        "N/A",
+        FORMAT(Change, "0%") & Arrow & PeriodLabel
+    )

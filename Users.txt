@@ -1,0 +1,37 @@
+Users = 
+-- Step 1: Capture the selected value from the 'Date Range' slicer
+VAR PeriodSelected = SELECTEDVALUE('Date Range'[Sort])  
+-- This assumes you have a slicer connected to a table named 'Date Range'
+-- The 'Sort' column holds numeric values that map to predefined periods:
+-- 1 = Last 7 days, 2 = Last 30 days, 3 = Last 90 days, 4 = Last 365 days, else Custom
+
+-- Step 2: Determine the number of days to look back based on the selected period
+VAR OffsetDays =
+    SWITCH(
+        PeriodSelected,
+        1, -7,   -- If 1 is selected, offset by 7 days
+        2, -30,  -- If 2 is selected, offset by 30 days
+        3, -90,  -- If 3 is selected, offset by 90 days
+        4, -365, -- If 4 is selected, offset by 365 days
+        BLANK()  -- If no match (Custom period), return BLANK
+    )
+
+-- Step 3: Return result based on whether a predefined or custom period was selected
+RETURN
+IF(
+    ISBLANK(OffsetDays),
+    
+    -- If Custom period is selected, just respect the current filter context
+    DISTINCTCOUNT(Data[User ID]),
+    
+    -- If predefined period (7, 30, 90, 365) is selected, calculate distinct users within that time frame
+    CALCULATE(
+        DISTINCTCOUNT(Data[User ID]), -- Count of unique users
+        DATESINPERIOD(
+            'Date Table'[Date],      -- Column used for date filtering
+            MAX('Date Table'[Date]), -- Use the latest date in the current context as the end date
+            OffsetDays,              -- Go back by the number of days determined above
+            DAY                      -- The interval unit is DAY
+        )
+    )
+)
